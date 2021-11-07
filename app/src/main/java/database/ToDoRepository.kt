@@ -1,8 +1,12 @@
 package database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.Room
+import com.example.todo.ToDo
 import java.lang.IllegalArgumentException
+import java.util.*
+import java.util.concurrent.Executors
 
 private const val DATABASE_NAME = "ToDo-database"
 
@@ -14,19 +18,46 @@ class ToDoRepository private constructor(context: Context){
         DATABASE_NAME
     ).build()
 
-    private val ToDoDao = database.ToDoDao()
+    private val toDoDao = database.ToDoDao()
 
-    companion object{
-        var INSTANCE:ToDoRepository? = null
+    private val executor = Executors.newSingleThreadExecutor()
 
-        fun initialize(context: Context){
-            if (INSTANCE == null){
-                INSTANCE = ToDoRepository(context)
-            }
+    fun getAllToDo(): LiveData<List<ToDo>> = toDoDao.getAllToDo()
+
+    fun getToDo(id: UUID):LiveData<ToDo?> = toDoDao.getToDo(id)
+
+    fun addToDo(toDo:ToDo){
+        executor.execute{toDoDao.addToDo(toDo)}
+    }
+
+    fun deleteToDo(toDo: ToDo){
+        executor.execute{
+            toDoDao.deleteToDo(toDo)
         }
     }
 
-    fun get() : ToDoRepository{
-        return INSTANCE ?: throw IllegalArgumentException("ToDoRepository must be initialized")
+    fun updateToDo(toDo: ToDo){
+        executor.execute{
+            toDoDao.updateToDo(toDo)
+        }
     }
+
+
+
+    companion object {
+        var INSTANCE: ToDoRepository? = null
+
+        fun initialize(context: Context) {
+            if (INSTANCE == null) {
+                INSTANCE = ToDoRepository(context)
+            }
+        }
+
+
+        fun get(): ToDoRepository {
+            return INSTANCE ?: throw IllegalArgumentException("ToDoRepository must be initialized")
+        }
+    }
+
+
 }
