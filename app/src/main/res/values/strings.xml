@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ToDo</string>
+
+    <string name="to_do_title_hint">enter title here... </string>
+    <string name="to_do_description_hint">enter description... </string>
+    <string name="creation_date_text">creation date</string>
+    <string name="due_date_text">due date</string>
+    <string name="delete_button">Delete</string>
+
+
+</resources>
