@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
 import com.example.todo.ToDo
 import toDoListFragment.KEY_ID
+import toDoListFragment.dateFormat
 import java.util.*
 
 
@@ -24,13 +25,16 @@ class ToDoFragment : Fragment() {
     private lateinit var dueDateBtn: Button
     private lateinit var deleteBtn : Button
 
-    private lateinit var toDo : ToDo
+    private var toDo = ToDo ()
+
+    val creationDateString = android.text.format.DateFormat.format(dateFormat,toDo.creationDate)
+    val dueDateString = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
 
     private val fragmentViewModel by lazy { ViewModelProvider(this).get(ToDoFragmentViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        toDo = ToDo()
+
 
         val toDoId = arguments?.getSerializable(KEY_ID) as UUID?
 
@@ -61,8 +65,8 @@ class ToDoFragment : Fragment() {
                     toDo = it
                     title.setText(it.title)
                     description.setText(it.description)
-                    creationDateBtn.text = it.creationDate.toString()
-                    dueDateBtn.text = it.dueDate.toString()
+                    creationDateBtn.text = creationDateString
+                    dueDateBtn.text = dueDateString
                 }
             }
         )

@@ -1,6 +1,7 @@
 package toDoListFragment
 
 import android.os.Bundle
+import android.text.format.DateFormat.format
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +17,12 @@ import com.example.todo.R
 import com.example.todo.ToDo
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import toDoFragment.ToDoFragment
+import java.lang.String.format
+import java.text.DateFormat
+import java.text.Format
 
 const val KEY_ID  = "ToDoID"
-const val dateFormat = "dd / MMM / yyyy"
+const val dateFormat = "dd/MMM/yyyy"
 
 class ToDoListFragment : Fragment() {
 
@@ -26,6 +30,9 @@ class ToDoListFragment : Fragment() {
 
     private lateinit var toDoRv : RecyclerView
     private lateinit var addToDo: FloatingActionButton
+
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -100,9 +107,12 @@ class ToDoListFragment : Fragment() {
         fun bind(toDo: ToDo){
             this.toDo = toDo
 
+            val creationDateString = android.text.format.DateFormat.format(dateFormat,toDo.creationDate)
+            val dueDateString = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+
             toDoTitle.text = toDo.title
-            toDoCreationDate.text = toDo.creationDate.toString()
-            toDoDueDate.text = toDo.dueDate.toString()
+            toDoCreationDate.text = creationDateString
+            toDoDueDate.text = dueDateString
 
 
         }

@@ -30,11 +30,11 @@
         android:id="@+id/due_date_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
+        android:layout_marginStart="16dp"
         android:text="TextView"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/title_item" />
+        app:layout_constraintStart_toEndOf="@+id/creation_date_item" />
 
     <CheckBox
         android:id="@+id/checkBox_item"
