@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
 import com.example.todo.ToDo
 import toDoListFragment.KEY_ID
+import toDoListFragment.ToDoListFragment
 import toDoListFragment.dateFormat
 import java.util.*
 
@@ -116,13 +117,32 @@ class ToDoFragment : Fragment() {
         title.addTextChangedListener(titleWatcher)
         description.addTextChangedListener(descriptionWatcher)
 
+        deleteBtn.setOnClickListener {
+            deleteToDo(toDo)
 
+            fragmentViewModel.saveUpdates(toDo)
+        }
     }
 
     override fun onStop() {
         super.onStop()
 
         fragmentViewModel.saveUpdates(toDo)
+    }
+
+    private fun deleteToDo(toDo: ToDo){
+
+            fragmentViewModel.deleteToDo(toDo)
+
+            val fragment = ToDoListFragment()
+
+            activity?.let {
+                it.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_container,fragment)
+                    .commit()
+            }
+
     }
 
 

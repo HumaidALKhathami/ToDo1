@@ -25,4 +25,8 @@ class ToDoFragmentViewModel : ViewModel() {
         toDoRepository.updateToDo(toDo)
     }
 
+    fun deleteToDo(toDo: ToDo){
+        toDoRepository.deleteToDo(toDo)
+    }
+
 }
