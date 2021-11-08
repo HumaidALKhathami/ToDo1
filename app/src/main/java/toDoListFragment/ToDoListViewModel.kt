@@ -1,6 +1,7 @@
 package toDoListFragment
 
 import androidx.lifecycle.ViewModel
+import com.example.todo.ToDo
 import database.ToDoRepository
 
 class ToDoListViewModel : ViewModel() {
@@ -9,6 +10,8 @@ class ToDoListViewModel : ViewModel() {
 
     val liveDataToDo = toDoRepository.getAllToDo()
 
-
+    fun addtoDo (toDo:ToDo){
+        toDoRepository.addToDo(toDo)
+    }
 
 }

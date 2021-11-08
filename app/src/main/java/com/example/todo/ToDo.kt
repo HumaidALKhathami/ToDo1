@@ -6,11 +6,11 @@ import java.util.*
 
 
 @Entity
-data class ToDo ( @PrimaryKey
+data class ToDo (@PrimaryKey
     val id : UUID = UUID.randomUUID(),
-    val title : String = "",
-    val description : String = "",
-    val isCompleted :Boolean = false,
-    val creationDate: Date = Date(),
-    val dueDate: Date = Date()
+                 var title : String = "",
+                 var description : String = "",
+                 var isCompleted :Boolean = false,
+                 val creationDate: Date = Date(),
+                 var dueDate: Date = Date()
     )
