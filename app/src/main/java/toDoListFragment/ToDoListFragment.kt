@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import toDoFragment.ToDoFragment
 
 const val KEY_ID  = "ToDoID"
+const val dateFormat = "dd / MMM / yyyy"
 
 class ToDoListFragment : Fragment() {
 
@@ -44,6 +45,8 @@ class ToDoListFragment : Fragment() {
 
         return view
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -81,6 +84,7 @@ class ToDoListFragment : Fragment() {
 
                 val fragment = ToDoFragment()
 
+                args.putSerializable(KEY_ID,toDo.id)
                 fragment.arguments = args
 
                 activity?.let {

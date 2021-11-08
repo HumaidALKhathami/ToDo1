@@ -32,9 +32,11 @@ class ToDoFragment : Fragment() {
         super.onCreate(savedInstanceState)
         toDo = ToDo()
 
-        val toDoId = arguments?.getSerializable(KEY_ID) as UUID
+        val toDoId = arguments?.getSerializable(KEY_ID) as UUID?
 
-        fragmentViewModel.loadToDo(toDoId)
+        if (toDoId != null) {
+            fragmentViewModel.loadToDo(toDoId)
+        }
 
         }
 
