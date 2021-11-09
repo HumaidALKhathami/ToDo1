@@ -14,7 +14,7 @@ import com.example.todo.R
 import com.example.todo.ToDo
 import toDoDialogs.DueDateDialog
 import toDoListFragment.KEY_ID
-import toDoListFragment.ToDoListFragment
+
 import toDoListFragment.dateFormat
 import java.util.*
 
