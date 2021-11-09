@@ -77,7 +77,7 @@ class ToDoListFragment : Fragment() {
         toDoRv.adapter = toDoAdapter
     }
 
-    private inner class ToDoHolder(view: View) : RecyclerView.ViewHolder(view) , View.OnClickListener, CompoundButton.OnCheckedChangeListener{
+    private inner class ToDoHolder(view: View) : RecyclerView.ViewHolder(view) , View.OnClickListener{
 
         private val toDoTitle: TextView = itemView.findViewById(R.id.title_item)
         private val toDoCreationDate: TextView = itemView.findViewById(R.id.creation_date_item)
@@ -88,8 +88,6 @@ class ToDoListFragment : Fragment() {
 
         init {
             itemView.setOnClickListener(this)
-
-            isCompletedCb.setOnCheckedChangeListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -114,7 +112,7 @@ class ToDoListFragment : Fragment() {
 
         }
 
-        @SuppressLint("ResourceAsColor")
+
         fun bind(toDo: ToDo){
             this.toDo = toDo
 
@@ -124,6 +122,7 @@ class ToDoListFragment : Fragment() {
             toDoTitle.text = toDo.title
             toDoCreationDate.text = creationDateString
             toDoDueDate.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+            isCompletedCb.isChecked = toDo.isCompleted
 
             val currentDate = Date()
 
@@ -131,16 +130,17 @@ class ToDoListFragment : Fragment() {
                 toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.red))
             }
 
+            isCompletedCb.setOnCheckedChangeListener{ _, isChecked ->
 
-        }
-
-        override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
 
 
                 toDo.isCompleted = isChecked
+                fragmentListViewModel.updateToDo(toDo)
 
                 Log.d("hello",toDo.isCompleted.toString())
 
+
+            }
 
         }
 
