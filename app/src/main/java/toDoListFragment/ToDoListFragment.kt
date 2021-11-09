@@ -2,12 +2,14 @@ package toDoListFragment
 
 import android.os.Bundle
 import android.text.format.DateFormat.format
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -71,7 +73,7 @@ class ToDoListFragment : Fragment() {
         toDoRv.adapter = toDoAdapter
     }
 
-    private inner class ToDoHolder(view: View) : RecyclerView.ViewHolder(view) , View.OnClickListener{
+    private inner class ToDoHolder(view: View) : RecyclerView.ViewHolder(view) , View.OnClickListener, CompoundButton.OnCheckedChangeListener{
 
         private val toDoTitle: TextView = itemView.findViewById(R.id.title_item)
         private val toDoCreationDate: TextView = itemView.findViewById(R.id.creation_date_item)
@@ -82,6 +84,8 @@ class ToDoListFragment : Fragment() {
 
         init {
             itemView.setOnClickListener(this)
+
+            isCompletedCb.setOnCheckedChangeListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -102,6 +106,8 @@ class ToDoListFragment : Fragment() {
                         .commit()
                 }
             }
+
+
         }
 
         fun bind(toDo: ToDo){
@@ -112,7 +118,18 @@ class ToDoListFragment : Fragment() {
 
             toDoTitle.text = toDo.title
             toDoCreationDate.text = creationDateString
-            toDoDueDate.text = dueDateString
+            toDoDueDate.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+
+
+
+        }
+
+        override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+
+
+                toDo.isCompleted = isChecked
+
+                Log.d("hello",toDo.isCompleted.toString())
 
 
         }
@@ -161,6 +178,4 @@ class ToDoListFragment : Fragment() {
             }
         }
     }
-
-
 }

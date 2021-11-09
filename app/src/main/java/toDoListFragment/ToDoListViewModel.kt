@@ -14,6 +14,8 @@ class ToDoListViewModel : ViewModel() {
         toDoRepository.addToDo(toDo)
     }
 
-
+    fun updateToDo(toDo: ToDo){
+        toDoRepository.updateToDo(toDo)
+    }
 
 }

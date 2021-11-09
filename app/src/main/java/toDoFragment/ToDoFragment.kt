@@ -12,13 +12,15 @@ import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
 import com.example.todo.ToDo
+import toDoDialogs.DueDateDialog
 import toDoListFragment.KEY_ID
 import toDoListFragment.ToDoListFragment
 import toDoListFragment.dateFormat
 import java.util.*
 
+const val DUE_DATE_KEY = "DueDate"
 
-class ToDoFragment : Fragment() {
+class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
 
     private lateinit var title: EditText
     private lateinit var description: EditText
@@ -29,7 +31,7 @@ class ToDoFragment : Fragment() {
     private var toDo = ToDo ()
 
     val creationDateString = android.text.format.DateFormat.format(dateFormat,toDo.creationDate)
-    val dueDateString = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+    var dueDateString = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
 
     private val fragmentViewModel by lazy { ViewModelProvider(this).get(ToDoFragmentViewModel::class.java) }
 
@@ -67,7 +69,7 @@ class ToDoFragment : Fragment() {
                     title.setText(it.title)
                     description.setText(it.description)
                     creationDateBtn.text = creationDateString
-                    dueDateBtn.text = dueDateString
+                    dueDateBtn.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
                 }
             }
         )
@@ -79,6 +81,8 @@ class ToDoFragment : Fragment() {
         creationDateBtn = view.findViewById(R.id.creation_date_btn)
         dueDateBtn = view.findViewById(R.id.due_date_btn)
         deleteBtn = view.findViewById(R.id.delete_button)
+
+        creationDateBtn.isEnabled = false
     }
 
     override fun onStart() {
@@ -122,6 +126,18 @@ class ToDoFragment : Fragment() {
 
             fragmentViewModel.saveUpdates(toDo)
         }
+
+        dueDateBtn.setOnClickListener{
+            val args = Bundle()
+            val dueDate = DueDateDialog()
+
+            args.putSerializable(DUE_DATE_KEY ,toDo.dueDate)
+
+            dueDate.arguments = args
+            dueDate.setTargetFragment(this,0)
+
+            dueDate.show(this.parentFragmentManager,"DueDate")
+        }
     }
 
     override fun onStop() {
@@ -143,6 +159,12 @@ class ToDoFragment : Fragment() {
                     .commit()
             }
 
+    }
+
+    override fun onDateSelected(date: Date) {
+        toDo.dueDate = date
+
+        dueDateBtn.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
     }
 
 
