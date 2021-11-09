@@ -27,11 +27,14 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
     private lateinit var creationDateBtn: Button
     private lateinit var dueDateBtn: Button
     private lateinit var deleteBtn : Button
+    private lateinit var saveBtn: Button
+
+    private  var toDoId:UUID? = null
 
     private var toDo = ToDo ()
 
     val creationDateString = android.text.format.DateFormat.format(dateFormat,toDo.creationDate)
-    var dueDateString = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+
 
     private val fragmentViewModel by lazy { ViewModelProvider(this).get(ToDoFragmentViewModel::class.java) }
 
@@ -39,13 +42,14 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
         super.onCreate(savedInstanceState)
 
 
-        val toDoId = arguments?.getSerializable(KEY_ID) as UUID?
+        toDoId = arguments?.getSerializable(KEY_ID) as UUID?
 
-        if (toDoId != null) {
-            fragmentViewModel.loadToDo(toDoId)
+
+        toDoId?.let {
+            fragmentViewModel.loadToDo(it)
         }
 
-        }
+    }
 
 
     override fun onCreateView(
@@ -53,7 +57,7 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_to_do, container, false)
-            initialize(view)
+        initialize(view)
 
 
 
@@ -81,6 +85,7 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
         creationDateBtn = view.findViewById(R.id.creation_date_btn)
         dueDateBtn = view.findViewById(R.id.due_date_btn)
         deleteBtn = view.findViewById(R.id.delete_button)
+        saveBtn = view.findViewById(R.id.save_changes_Btn)
 
         creationDateBtn.isEnabled = false
     }
@@ -88,7 +93,7 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
     override fun onStart() {
         super.onStart()
 
-        val titleWatcher = object : TextWatcher{
+        val titleWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // nothing to do here
             }
@@ -103,7 +108,7 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
 
         }
 
-        val descriptionWatcher = object :TextWatcher{
+        val descriptionWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // nothing to do here
             }
@@ -127,36 +132,46 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
             fragmentViewModel.saveUpdates(toDo)
         }
 
-        dueDateBtn.setOnClickListener{
+        dueDateBtn.setOnClickListener {
             val args = Bundle()
             val dueDate = DueDateDialog()
 
-            args.putSerializable(DUE_DATE_KEY ,toDo.dueDate)
+            args.putSerializable(DUE_DATE_KEY, toDo.dueDate)
 
             dueDate.arguments = args
-            dueDate.setTargetFragment(this,0)
+            dueDate.setTargetFragment(this, 0)
 
-            dueDate.show(this.parentFragmentManager,"DueDate")
+            dueDate.show(this.parentFragmentManager, "DueDate")
+        }
+
+        saveBtn.setOnClickListener {
+            if (toDoId == null) {
+
+                fragmentViewModel.addtoDo(toDo)
+                saveToDo(toDo)
+            } else {
+
+
+                saveToDo(toDo)
+
+
+            }
         }
     }
 
     override fun onStop() {
         super.onStop()
 
-        fragmentViewModel.saveUpdates(toDo)
+
     }
 
     private fun deleteToDo(toDo: ToDo){
 
             fragmentViewModel.deleteToDo(toDo)
 
-            val fragment = ToDoListFragment()
-
             activity?.let {
                 it.supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fragment_container,fragment)
-                    .commit()
+                    .popBackStackImmediate()
             }
 
     }
@@ -165,6 +180,17 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
         toDo.dueDate = date
 
         dueDateBtn.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+    }
+
+    private fun saveToDo(toDo: ToDo){
+
+        fragmentViewModel.saveUpdates(toDo)
+
+
+        activity?.let {
+            it.supportFragmentManager
+                .popBackStackImmediate()
+        }
     }
 
 

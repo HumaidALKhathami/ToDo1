@@ -171,13 +171,9 @@ class ToDoListFragment : Fragment() {
     fun addToDo(){
         addToDo.setOnClickListener {
 
-            val toDo = ToDo()
-            val args = Bundle()
+
             val fragment = ToDoFragment()
 
-            fragmentListViewModel.addtoDo(toDo)
-            args.putSerializable(KEY_ID,toDo.id)
-            fragment.arguments = args
 
             activity?.let {
                 it.supportFragmentManager

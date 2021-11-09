@@ -11,7 +11,7 @@ import java.util.*
 class ToDoFragmentViewModel : ViewModel() {
 
     private val toDoRepository = ToDoRepository.get()
-    private val toDoIdLiveData = MutableLiveData<UUID>()
+    val toDoIdLiveData = MutableLiveData<UUID>()
 
     var toDoLiveData:LiveData<ToDo?> = Transformations.switchMap(toDoIdLiveData){
         toDoRepository.getToDo(it)
@@ -29,4 +29,11 @@ class ToDoFragmentViewModel : ViewModel() {
         toDoRepository.deleteToDo(toDo)
     }
 
+    fun getToDo(id:UUID){
+        toDoRepository.getToDo(id)
+    }
+
+    fun addtoDo (toDo:ToDo){
+        toDoRepository.addToDo(toDo)
+    }
 }

@@ -26,6 +26,8 @@ class ToDoRepository private constructor(context: Context){
 
     fun getToDo(id: UUID):LiveData<ToDo?> = toDoDao.getToDo(id)
 
+
+
     fun addToDo(toDo:ToDo){
         executor.execute{toDoDao.addToDo(toDo)}
     }
