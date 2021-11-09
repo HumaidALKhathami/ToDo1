@@ -1,5 +1,7 @@
 package toDoListFragment
 
+import android.annotation.SuppressLint
+import android.icu.util.TimeUnit.values
 import android.os.Bundle
 import android.text.format.DateFormat.format
 import android.util.Log
@@ -22,6 +24,8 @@ import toDoFragment.ToDoFragment
 import java.lang.String.format
 import java.text.DateFormat
 import java.text.Format
+import java.time.chrono.JapaneseEra.values
+import java.util.*
 
 const val KEY_ID  = "ToDoID"
 const val dateFormat = "dd/MMM/yyyy"
@@ -110,6 +114,7 @@ class ToDoListFragment : Fragment() {
 
         }
 
+        @SuppressLint("ResourceAsColor")
         fun bind(toDo: ToDo){
             this.toDo = toDo
 
@@ -120,6 +125,11 @@ class ToDoListFragment : Fragment() {
             toDoCreationDate.text = creationDateString
             toDoDueDate.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
 
+            val currentDate = Date()
+
+            if (currentDate > toDo.dueDate ){
+                toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.red))
+            }
 
 
         }

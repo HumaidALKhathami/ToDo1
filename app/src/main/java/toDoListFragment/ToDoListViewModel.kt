@@ -1,6 +1,7 @@
 package toDoListFragment
 
 import androidx.lifecycle.ViewModel
+import com.example.todo.R
 import com.example.todo.ToDo
 import database.ToDoRepository
 
@@ -17,5 +18,7 @@ class ToDoListViewModel : ViewModel() {
     fun updateToDo(toDo: ToDo){
         toDoRepository.updateToDo(toDo)
     }
+
+    val red = R.color.red
 
 }
