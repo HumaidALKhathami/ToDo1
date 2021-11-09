@@ -126,7 +126,7 @@ class ToDoListFragment : Fragment() {
 
             val currentDate = Date()
 
-            if (currentDate > toDo.dueDate ){
+            if (currentDate.after(toDo.dueDate)){
                 toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.red))
             }
 
