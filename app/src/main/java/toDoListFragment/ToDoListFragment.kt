@@ -117,17 +117,21 @@ class ToDoListFragment : Fragment() {
             this.toDo = toDo
 
             val creationDateString = android.text.format.DateFormat.format(dateFormat,toDo.creationDate)
-            val dueDateString = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+
 
             toDoTitle.text = toDo.title
             toDoCreationDate.text = creationDateString
-            toDoDueDate.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+            toDoDueDate.text = "enter due date"
             isCompletedCb.isChecked = toDo.isCompleted
 
             val currentDate = Date()
 
-            if (currentDate.after(toDo.dueDate)){
-                toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.red))
+
+            if(toDo.dueDate != null) {
+                if (currentDate.after(toDo.dueDate)) {
+                    toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.red))
+                }
+                toDoDueDate.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
             }
 
             isCompletedCb.setOnCheckedChangeListener{ _, isChecked ->

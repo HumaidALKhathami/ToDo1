@@ -15,7 +15,10 @@ class DueDateDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val date = arguments?.getSerializable(DUE_DATE_KEY) as Date
+        val date  = when (arguments?.getSerializable(DUE_DATE_KEY) as Date?) {
+            null -> Date()
+            else -> arguments?.getSerializable(DUE_DATE_KEY) as Date
+        }
 
         val calendar = Calendar.getInstance()
         calendar.time = date

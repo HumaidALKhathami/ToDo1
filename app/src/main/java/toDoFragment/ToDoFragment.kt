@@ -73,7 +73,10 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
                     title.setText(it.title)
                     description.setText(it.description)
                     creationDateBtn.text = creationDateString
-                    dueDateBtn.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+                     when (toDo.dueDate) {
+                         null ->"enter due date"
+                         else -> dueDateBtn.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+                     }
                 }
             }
         )
@@ -159,11 +162,7 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
         }
     }
 
-    override fun onStop() {
-        super.onStop()
 
-
-    }
 
     private fun deleteToDo(toDo: ToDo){
 

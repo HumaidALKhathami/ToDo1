@@ -26,6 +26,7 @@
         android:layout_marginBottom="29dp"
         android:text="@string/creation_date_text"
         android:textColor="@color/black"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/creation_date_btn"
         app:layout_constraintEnd_toEndOf="@+id/creation_date_btn" />
 
@@ -37,6 +38,7 @@
         android:layout_marginBottom="29dp"
         android:text="@string/due_date_text"
         android:textColor="@color/black"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/due_date_btn"
         app:layout_constraintStart_toStartOf="@+id/due_date_btn" />
 
@@ -47,7 +49,7 @@
         android:layout_marginStart="41dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="48dp"
-        android:text="TextView"
+        android:text="@string/creation_date_text"
         app:layout_constraintBottom_toTopOf="@+id/to_do_description"
         app:layout_constraintEnd_toStartOf="@+id/due_date_btn"
         app:layout_constraintStart_toStartOf="parent" />
@@ -58,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="58dp"
         android:layout_marginBottom="48dp"
-        android:text="TextView"
+        android:text="@string/due_date_text"
         app:layout_constraintBottom_toTopOf="@+id/to_do_description"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -12,5 +12,5 @@ data class ToDo (@PrimaryKey
                  var description : String = "",
                  var isCompleted :Boolean = false,
                  val creationDate: Date = Date(),
-                 var dueDate: Date = Date()
+                 var dueDate: Date? = null
     )
