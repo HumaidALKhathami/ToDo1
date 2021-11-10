@@ -253,11 +253,13 @@ class ToDoListFragment : Fragment() {
 
     private fun observer (sortType:String){
 
+        fragmentListViewModel.liveDataToDo.removeObservers(viewLifecycleOwner)
+
         val liveData = fragmentListViewModel.sorting(sortType)
 
         liveData.observe(
             viewLifecycleOwner, Observer {
-                Log.d("from observer", " hi  $sortType")
+                Log.d("from observer", " hi  $it")
                 updateUI(it)
             }
         )
