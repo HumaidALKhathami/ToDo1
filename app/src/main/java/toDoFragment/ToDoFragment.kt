@@ -132,7 +132,7 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
         deleteBtn.setOnClickListener {
             deleteToDo(toDo)
 
-            fragmentViewModel.saveUpdates(toDo)
+            fragmentViewModel.updateToDo(toDo)
         }
 
         dueDateBtn.setOnClickListener {
@@ -183,7 +183,7 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
 
     private fun saveToDo(toDo: ToDo){
 
-        fragmentViewModel.saveUpdates(toDo)
+        fragmentViewModel.updateToDo(toDo)
 
 
         activity?.let {

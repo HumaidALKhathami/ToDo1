@@ -21,7 +21,7 @@ class ToDoFragmentViewModel : ViewModel() {
         toDoIdLiveData.value = toDoId
     }
 
-    fun saveUpdates(toDo: ToDo){
+    fun updateToDo(toDo: ToDo){
         toDoRepository.updateToDo(toDo)
     }
 

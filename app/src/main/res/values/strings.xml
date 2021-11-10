@@ -8,4 +8,13 @@
     <string name="delete_button">Delete</string>
     <string name="save_changes_Btn">Save</string>
 
+
+    // sort
+    <string name="sort_by">sort by</string>
+    <string name="by_creation_date">creation date</string>
+    <string name="by_due_date">due date</string>
+    <string name="by_alphabetically">alphabetically</string>
+    <string name="by_completed">done</string>
+    <string name="by_not_completed">not done</string>
+
 </resources>

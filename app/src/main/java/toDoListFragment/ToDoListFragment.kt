@@ -5,14 +5,13 @@ import android.icu.util.TimeUnit.values
 import android.os.Bundle
 import android.text.format.DateFormat.format
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.TextView
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,10 +33,21 @@ class ToDoListFragment : Fragment() {
 
     private val fragmentListViewModel by lazy { ViewModelProvider(this).get(ToDoListViewModel::class.java) }
 
+
     private lateinit var toDoRv : RecyclerView
     private lateinit var addToDo: FloatingActionButton
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.fragment_list_menu,menu)
+    }
 
 
     override fun onCreateView(
@@ -64,12 +74,17 @@ class ToDoListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         fragmentListViewModel.liveDataToDo.observe(
             viewLifecycleOwner, Observer {
                 updateUI(it)
             }
         )
+
+
     }
+
+
 
     private fun updateUI(todos: List<ToDo>){
         val toDoAdapter = ToDoAdapter(todos)
@@ -141,6 +156,8 @@ class ToDoListFragment : Fragment() {
                 toDo.isCompleted = isChecked
                 fragmentListViewModel.updateToDo(toDo)
 
+
+
                 Log.d("hello",toDo.isCompleted.toString())
 
 
@@ -188,4 +205,65 @@ class ToDoListFragment : Fragment() {
             }
         }
     }
+
+
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+
+
+        return when(item.itemId){
+
+            R.id.by_due_date -> {
+
+
+
+                observer("dueDate")
+
+            true
+            }
+            R.id.by_creation_date -> {
+
+
+                observer("creationDate")
+                true
+            }
+            R.id.by_alphabetically ->{
+
+                observer("title")
+                true
+            }
+            R.id.by_completed -> {
+
+
+                observer("isCompleted = 0")
+                true
+            }
+            R.id.by_not_completed -> {
+
+                observer("isCompleted = 1")
+
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+
+        }
+    }
+
+    private fun observer (sortType:String){
+
+        val liveData = fragmentListViewModel.sorting(sortType)
+
+        liveData.observe(
+            viewLifecycleOwner, Observer {
+                Log.d("from observer", " hi  $sortType")
+                updateUI(it)
+            }
+        )
+
+    }
+
+
+
 }

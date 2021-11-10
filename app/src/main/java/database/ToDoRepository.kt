@@ -2,6 +2,7 @@ package database
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.room.Query
 import androidx.room.Room
 import com.example.todo.ToDo
 import java.lang.IllegalArgumentException
@@ -25,6 +26,11 @@ class ToDoRepository private constructor(context: Context){
     fun getAllToDo(): LiveData<List<ToDo>> = toDoDao.getAllToDo()
 
     fun getToDo(id: UUID):LiveData<ToDo?> = toDoDao.getToDo(id)
+
+
+
+    fun sorting(sortType:String):LiveData<List<ToDo>> = toDoDao.sorting(sortType)
+
 
 
 

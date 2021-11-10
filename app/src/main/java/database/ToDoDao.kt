@@ -24,5 +24,7 @@ interface ToDoDao {
     @Update
     fun updateToDo(toDo: ToDo)
 
+    @Query("SELECT * FROM ToDo ORDER BY (:sortType)")
+    fun sorting(sortType:String):LiveData<List<ToDo>>
 
 }
