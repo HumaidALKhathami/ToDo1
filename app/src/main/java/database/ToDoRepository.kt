@@ -67,5 +67,5 @@ class ToDoRepository private constructor(context: Context){
         }
     }
 
-
+    fun updateIsCompleted(isCompleted: Boolean , id: UUID) = toDoDao.updateIsCompleted(isCompleted,id)
 }

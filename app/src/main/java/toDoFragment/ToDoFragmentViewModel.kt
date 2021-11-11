@@ -33,7 +33,7 @@ class ToDoFragmentViewModel : ViewModel() {
         toDoRepository.getToDo(id)
     }
 
-    fun addtoDo (toDo:ToDo){
+    fun addToDo (toDo:ToDo){
         toDoRepository.addToDo(toDo)
     }
 }

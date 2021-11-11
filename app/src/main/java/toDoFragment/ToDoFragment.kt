@@ -150,7 +150,7 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
         saveBtn.setOnClickListener {
             if (toDoId == null) {
 
-                fragmentViewModel.addtoDo(toDo)
+                fragmentViewModel.addToDo(toDo)
                 saveToDo(toDo)
             } else {
 

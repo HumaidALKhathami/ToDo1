@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -71,23 +72,31 @@ class ToDoListFragment : Fragment() {
 
 
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        fragmentListViewModel.liveDataToDo.observe(
-            viewLifecycleOwner, Observer {
-                updateUI(it)
-            }
-        )
+//        fragmentListViewModel.liveDataToDo.observe(
+//            viewLifecycleOwner, Observer {
+//                updateUI(it)
+//            }
+//        )
+
+        getAll()
 
 
+
+        Log.d("hi" , "from view created")
     }
+
 
 
 
     private fun updateUI(todos: List<ToDo>){
         val toDoAdapter = ToDoAdapter(todos)
+
+        fragmentListViewModel.liveDataToDo.observeOnce(viewLifecycleOwner, Observer { ToDoAdapter(todos) })
 
         toDoRv.adapter = toDoAdapter
     }
@@ -153,9 +162,7 @@ class ToDoListFragment : Fragment() {
 
 
 
-                toDo.isCompleted = isChecked
-                fragmentListViewModel.updateToDo(toDo)
-
+                fragmentListViewModel.updateIsCompleted(isChecked,toDo.id)
 
 
                 Log.d("hello",toDo.isCompleted.toString())
@@ -163,8 +170,8 @@ class ToDoListFragment : Fragment() {
 
             }
 
-        }
 
+        }
     }
 
     private inner class ToDoAdapter(var ToDos:List<ToDo>) : RecyclerView.Adapter<ToDoHolder>() {
@@ -189,7 +196,7 @@ class ToDoListFragment : Fragment() {
 
     }
 
-    fun addToDo(){
+    private fun addToDo(){
         addToDo.setOnClickListener {
 
 
@@ -216,8 +223,7 @@ class ToDoListFragment : Fragment() {
         return when(item.itemId){
 
             R.id.by_due_date -> {
-
-
+                clearObserver()
 
                 observer("dueDate")
 
@@ -230,6 +236,7 @@ class ToDoListFragment : Fragment() {
                 true
             }
             R.id.by_alphabetically ->{
+                clearObserver()
 
                 observer("title")
                 true
@@ -253,19 +260,50 @@ class ToDoListFragment : Fragment() {
 
     private fun observer (sortType:String){
 
-        fragmentListViewModel.liveDataToDo.removeObservers(viewLifecycleOwner)
 
         val liveData = fragmentListViewModel.sorting(sortType)
 
-        liveData.observe(
+
+        liveData.observeOnce(
             viewLifecycleOwner, Observer {
                 Log.d("from observer", " hi  $it")
                 updateUI(it)
             }
         )
 
+
+
     }
 
+    private fun getAll(){
+        fragmentListViewModel.liveDataToDo.observe(
+            viewLifecycleOwner, Observer {
+                updateUI(it)
+            }
+        )
+    }
+
+    private fun clearObserver(){
+
+        fragmentListViewModel.liveDataToDo.removeObservers(viewLifecycleOwner)
+
+        val titleData = fragmentListViewModel.sorting("title")
+        titleData.removeObservers(viewLifecycleOwner)
+
+        val dueDateData = fragmentListViewModel.sorting("dueDate")
+        dueDateData.removeObservers(viewLifecycleOwner)
+
+
+    }
+
+    private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+            override fun onChanged(t: T?) {
+                observer.onChanged(t)
+                removeObserver(this)
+            }
+        })
+    }
 
 
 }
