@@ -77,11 +77,7 @@ class ToDoListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-//        fragmentListViewModel.liveDataToDo.observe(
-//            viewLifecycleOwner, Observer {
-//                updateUI(it)
-//            }
-//        )
+
 
         getAll()
 
@@ -96,7 +92,6 @@ class ToDoListFragment : Fragment() {
     private fun updateUI(todos: List<ToDo>){
         val toDoAdapter = ToDoAdapter(todos)
 
-        fragmentListViewModel.liveDataToDo.observeOnce(viewLifecycleOwner, Observer { ToDoAdapter(todos) })
 
         toDoRv.adapter = toDoAdapter
     }
@@ -276,7 +271,7 @@ class ToDoListFragment : Fragment() {
     }
 
     private fun getAll(){
-        fragmentListViewModel.liveDataToDo.observe(
+        fragmentListViewModel.liveDataToDo.observeOnce(
             viewLifecycleOwner, Observer {
                 updateUI(it)
             }
