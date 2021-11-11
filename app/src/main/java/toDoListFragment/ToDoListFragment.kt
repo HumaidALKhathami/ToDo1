@@ -1,6 +1,7 @@
 package toDoListFragment
 
 import android.annotation.SuppressLint
+import android.graphics.Paint
 import android.icu.util.TimeUnit.values
 import android.os.Bundle
 import android.text.format.DateFormat.format
@@ -137,35 +138,52 @@ class ToDoListFragment : Fragment() {
 
             val creationDateString = android.text.format.DateFormat.format(dateFormat,toDo.creationDate)
 
+            checkIsCompleted()
 
             toDoTitle.text = toDo.title
             toDoCreationDate.text = creationDateString
             toDoDueDate.text = "enter due date"
             isCompletedCb.isChecked = toDo.isCompleted
 
-            val currentDate = Date()
 
-
-            if(toDo.dueDate != null) {
-                if (currentDate.after(toDo.dueDate)) {
-                    toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.red))
-                }
-                toDoDueDate.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
-            }
 
             isCompletedCb.setOnCheckedChangeListener{ _, isChecked ->
 
 
+                toDo.isCompleted = isChecked
 
-                fragmentListViewModel.updateIsCompleted(isChecked,toDo.id)
+                checkIsCompleted()
 
-
-                Log.d("hello",toDo.isCompleted.toString())
+                fragmentListViewModel.updateToDo(toDo)
 
 
             }
 
 
+        }
+
+        private fun checkIsCompleted(){
+            if (toDo.isCompleted) {
+                toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.black))
+
+                toDoTitle.apply {
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                }
+            }else if (!toDo.isCompleted){
+                toDoTitle.apply {
+                    paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                }
+            }
+
+            val currentDate = Date()
+
+            if(toDo.dueDate != null) {
+
+                if (currentDate.after(toDo.dueDate) && !toDo.isCompleted) {
+                    toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.red))
+                }
+                toDoDueDate.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+            }
         }
     }
 
@@ -299,6 +317,7 @@ class ToDoListFragment : Fragment() {
             }
         })
     }
+
 
 
 }

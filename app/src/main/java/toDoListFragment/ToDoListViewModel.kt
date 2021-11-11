@@ -24,6 +24,7 @@ class ToDoListViewModel : ViewModel() {
     }
 
     val red = R.color.red
+    val black = R.color.black
 
 
     fun sorting(sortType:String):LiveData<List<ToDo>>  = toDoRepository.sorting(sortType)
