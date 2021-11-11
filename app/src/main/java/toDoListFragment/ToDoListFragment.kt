@@ -84,6 +84,8 @@ class ToDoListFragment : Fragment() {
 
 
 
+
+
         Log.d("hi" , "from view created")
     }
 
@@ -144,7 +146,9 @@ class ToDoListFragment : Fragment() {
             toDoCreationDate.text = creationDateString
             toDoDueDate.text = "enter due date"
             isCompletedCb.isChecked = toDo.isCompleted
-
+            if(toDo.dueDate != null) {
+                toDoDueDate.text = android.text.format.DateFormat.format(dateFormat, toDo.dueDate)
+            }
 
 
             isCompletedCb.setOnCheckedChangeListener{ _, isChecked ->
@@ -178,11 +182,9 @@ class ToDoListFragment : Fragment() {
             val currentDate = Date()
 
             if(toDo.dueDate != null) {
-
                 if (currentDate.after(toDo.dueDate) && !toDo.isCompleted) {
                     toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.red))
                 }
-                toDoDueDate.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
             }
         }
     }
@@ -277,9 +279,8 @@ class ToDoListFragment : Fragment() {
         val liveData = fragmentListViewModel.sorting(sortType)
 
 
-        liveData.observeOnce(
+       liveData.observeOnce(
             viewLifecycleOwner, Observer {
-                Log.d("from observer", " hi  $it")
                 updateUI(it)
             }
         )
