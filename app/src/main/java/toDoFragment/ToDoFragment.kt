@@ -224,9 +224,18 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
             })
             val alert = builder.create()
             alert.show()
-        }else {
+        }else if (toDoId == null){
+
+            fragmentViewModel.addToDo(toDo)
+
+            fragmentViewModel.updateToDo(toDo)
 
 
+            activity?.let {
+                it.supportFragmentManager
+                    .popBackStackImmediate()
+            }
+        }else{
             fragmentViewModel.updateToDo(toDo)
 
 
