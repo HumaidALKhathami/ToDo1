@@ -84,7 +84,7 @@ class ToDoListFragment : Fragment() {
 
 
 
-        fragmentListViewModel.liveDataToDo.observe(
+        fragmentListViewModel.liveDataToDo.observeOnce(
             viewLifecycleOwner, Observer {
                 updateUI(it)
             }
@@ -265,12 +265,12 @@ class ToDoListFragment : Fragment() {
             R.id.by_completed -> {
 
 
-                observer("isCompleted = 0")
+                observer("isCompleted0")
                 true
             }
             R.id.by_not_completed -> {
 
-                observer("isCompleted = 1")
+                observer("isCompleted1")
 
                 true
             }
