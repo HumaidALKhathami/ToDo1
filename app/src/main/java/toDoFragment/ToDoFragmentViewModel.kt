@@ -29,10 +29,6 @@ class ToDoFragmentViewModel : ViewModel() {
         toDoRepository.deleteToDo(toDo)
     }
 
-    fun getToDo(id:UUID){
-        toDoRepository.getToDo(id)
-    }
-
     fun addToDo (toDo:ToDo){
         toDoRepository.addToDo(toDo)
     }

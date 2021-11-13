@@ -1,5 +1,8 @@
 package toDoFragment
 
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
+import androidx.sqlite.db.SupportSQLiteCompat.Api16Impl.cancel
 import com.example.todo.R
 import com.example.todo.ToDo
 import toDoDialogs.DueDateDialog
@@ -150,7 +154,7 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
         saveBtn.setOnClickListener {
             if (toDoId == null) {
 
-                fragmentViewModel.addToDo(toDo)
+
                 saveToDo(toDo)
             } else {
 
@@ -166,12 +170,27 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
 
     private fun deleteToDo(toDo: ToDo){
 
+        val builder = AlertDialog.Builder(activity)
+
+        builder.setTitle("confirm delete")
+        builder.setMessage("are you sure you want to delete this task?")
+
+        builder.setPositiveButton("delete",DialogInterface.OnClickListener{ _, _ ->
+
             fragmentViewModel.deleteToDo(toDo)
 
             activity?.let {
                 it.supportFragmentManager
                     .popBackStackImmediate()
             }
+        })
+        builder.setNegativeButton("cancel",DialogInterface.OnClickListener{ dialog, _ ->
+        dialog.cancel()
+        })
+        val alert = builder.create()
+        alert.show()
+
+
 
     }
 
@@ -182,13 +201,39 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
     }
 
     private fun saveToDo(toDo: ToDo){
+        if (toDo.title == "" && toDoId == null){
+            val builder = AlertDialog.Builder(activity)
 
-        fragmentViewModel.updateToDo(toDo)
+            builder.setTitle("Empty title")
+            builder.setMessage("are you sure you want to add a task with Empty title?")
+
+            builder.setPositiveButton("add",DialogInterface.OnClickListener{ _, _ ->
+
+                fragmentViewModel.addToDo(toDo)
+
+                fragmentViewModel.updateToDo(toDo)
 
 
-        activity?.let {
-            it.supportFragmentManager
-                .popBackStackImmediate()
+                activity?.let {
+                    it.supportFragmentManager
+                        .popBackStackImmediate()
+                }
+            })
+            builder.setNegativeButton("cancel",DialogInterface.OnClickListener{ dialog, _ ->
+                dialog.cancel()
+            })
+            val alert = builder.create()
+            alert.show()
+        }else {
+
+
+            fragmentViewModel.updateToDo(toDo)
+
+
+            activity?.let {
+                it.supportFragmentManager
+                    .popBackStackImmediate()
+            }
         }
     }
 

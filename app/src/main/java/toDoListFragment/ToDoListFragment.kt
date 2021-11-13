@@ -84,6 +84,12 @@ class ToDoListFragment : Fragment() {
 
 
 
+        fragmentListViewModel.liveDataToDo.observe(
+            viewLifecycleOwner, Observer {
+                updateUI(it)
+            }
+        )
+
 
 
         Log.d("hi" , "from view created")
@@ -238,7 +244,7 @@ class ToDoListFragment : Fragment() {
         return when(item.itemId){
 
             R.id.by_due_date -> {
-                clearObserver()
+
 
                 observer("dueDate")
 
@@ -251,7 +257,7 @@ class ToDoListFragment : Fragment() {
                 true
             }
             R.id.by_alphabetically ->{
-                clearObserver()
+
 
                 observer("title")
                 true
@@ -297,18 +303,7 @@ class ToDoListFragment : Fragment() {
         )
     }
 
-    private fun clearObserver(){
 
-        fragmentListViewModel.liveDataToDo.removeObservers(viewLifecycleOwner)
-
-        val titleData = fragmentListViewModel.sorting("title")
-        titleData.removeObservers(viewLifecycleOwner)
-
-        val dueDateData = fragmentListViewModel.sorting("dueDate")
-        dueDateData.removeObservers(viewLifecycleOwner)
-
-
-    }
 
     private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
         observe(lifecycleOwner, object : Observer<T> {
