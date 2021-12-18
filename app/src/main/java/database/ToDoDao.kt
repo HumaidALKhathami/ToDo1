@@ -3,6 +3,7 @@ package database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.todo.ToDo
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 @Dao
@@ -10,7 +11,7 @@ interface ToDoDao {
 
 
     @Query("SELECT * FROM ToDo")
-    fun getAllToDo():LiveData<List<ToDo>>
+    fun getAllToDo():Flow<List<ToDo>>
 
     @Query("SELECT * FROM ToDo WHERE id = (:id)")
     fun getToDo(id:UUID):LiveData<ToDo?>

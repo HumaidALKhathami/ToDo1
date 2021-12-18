@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Query
 import androidx.room.Room
 import com.example.todo.ToDo
+import kotlinx.coroutines.flow.Flow
 import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.Executors
@@ -23,7 +24,7 @@ class ToDoRepository private constructor(context: Context){
 
     private val executor = Executors.newSingleThreadExecutor()
 
-    fun getAllToDo(): LiveData<List<ToDo>> = toDoDao.getAllToDo()
+    suspend fun getAllToDo(): Flow<List<ToDo>> = toDoDao.getAllToDo()
 
     fun getToDo(id: UUID):LiveData<ToDo?> = toDoDao.getToDo(id)
 

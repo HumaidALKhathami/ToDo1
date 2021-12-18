@@ -6,14 +6,14 @@ import androidx.lifecycle.ViewModel
 import com.example.todo.R
 import com.example.todo.ToDo
 import database.ToDoRepository
-
+import kotlinx.coroutines.flow.Flow
 
 
 class ToDoListViewModel : ViewModel() {
 
     private val toDoRepository = ToDoRepository.get()
 
-    val liveDataToDo = toDoRepository.getAllToDo()
+    suspend fun liveDataToDo():Flow<List<ToDo>> = toDoRepository.getAllToDo()
 
 
 

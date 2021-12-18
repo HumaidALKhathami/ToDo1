@@ -22,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,295 +39,330 @@ import java.util.*
 
 const val DUE_DATE_KEY = "DueDate"
 
-class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
+class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack {
 
     private lateinit var title: EditText
     private lateinit var description: EditText
     private lateinit var creationDateBtn: Button
     private lateinit var dueDateBtn: Button
-    private lateinit var deleteBtn : Button
+    private lateinit var deleteBtn: Button
     private lateinit var saveBtn: Button
 
-    private  var toDoId:UUID? = null
+    private lateinit var composeView : ComposeView
 
-    private var toDo = ToDo ()
+//    private var toDoId: UUID? = null
 
-    val creationDateString = android.text.format.DateFormat.format(dateFormat,toDo.creationDate)
+    private var toDo = ToDo()
 
+    val creationDateString = android.text.format.DateFormat.format(dateFormat, toDo.creationDate)
 
-    private val fragmentViewModel by lazy { ViewModelProvider(this).get(ToDoFragmentViewModel::class.java) }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-        toDoId = arguments?.getSerializable(KEY_ID) as UUID?
-
-
-        toDoId?.let {
-            fragmentViewModel.loadToDo(it)
-        }
-
-    }
-
-
+//
+//    private val fragmentViewModel by lazy { ViewModelProvider(this).get(ToDoFragmentViewModel::class.java) }
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//
+//
+//        toDoId = arguments?.getSerializable(KEY_ID) as UUID?
+//
+//
+//        toDoId?.let {
+//            fragmentViewModel.loadToDo(it)
+//        }
+//
+//    }
+//
+//
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_to_do, container, false)
-        initialize(view)
 
+        composeView = view.findViewById(R.id.fragment_compose_view)
+
+        composeView.apply {
+          setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
+            setContent {
+                ToDoFragmentCompose()
+            }
+        }
 
 
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        fragmentViewModel.toDoLiveData.observe(
-            viewLifecycleOwner, androidx.lifecycle.Observer {
-                it?.let {
-                    toDo = it
-                    title.setText(it.title)
-                    description.setText(it.description)
-                    creationDateBtn.text = creationDateString
-                     when (toDo.dueDate) {
-                         null ->"enter due date"
-                         else -> dueDateBtn.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
-                     }
-                }
-            }
-        )
-    }
-
-    private fun initialize(view: View){
-//        title = view.findViewById(R.id.to_do_title)
-//        description = view.findViewById(R.id.to_do_description)
-//        creationDateBtn = view.findViewById(R.id.creation_date_btn)
-//        dueDateBtn = view.findViewById(R.id.due_date_btn)
-//        deleteBtn = view.findViewById(R.id.delete_button)
-//        saveBtn = view.findViewById(R.id.save_changes_Btn)
-
-        creationDateBtn.isEnabled = false
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        val titleWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // nothing to do here
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                toDo.title = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                // nothing to do here
-            }
-
-        }
-
-        val descriptionWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // nothing to do here
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                toDo.description = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                // nothing to do here
-            }
-
-        }
-
-        title.addTextChangedListener(titleWatcher)
-        description.addTextChangedListener(descriptionWatcher)
-
-        deleteBtn.setOnClickListener {
-            deleteToDo(toDo)
-
-            fragmentViewModel.updateToDo(toDo)
-        }
-
-        dueDateBtn.setOnClickListener {
-            val args = Bundle()
-            val dueDate = DueDateDialog()
-
-            args.putSerializable(DUE_DATE_KEY, toDo.dueDate)
-
-            dueDate.arguments = args
-            dueDate.setTargetFragment(this, 0)
-
-            dueDate.show(this.parentFragmentManager, "DueDate")
-        }
-
-        saveBtn.setOnClickListener {
-            if (toDoId == null) {
-
-
-                saveToDo(toDo)
-            } else {
-
-
-                saveToDo(toDo)
-
-
-            }
-        }
-    }
-
-
-
-    private fun deleteToDo(toDo: ToDo){
-
-        val builder = AlertDialog.Builder(activity)
-
-        builder.setTitle("confirm delete")
-        builder.setMessage("are you sure you want to delete this task?")
-
-        builder.setPositiveButton("delete",DialogInterface.OnClickListener{ _, _ ->
-
-            fragmentViewModel.deleteToDo(toDo)
-
-            activity?.let {
-                it.supportFragmentManager
-                    .popBackStackImmediate()
-            }
-        })
-        builder.setNegativeButton("cancel",DialogInterface.OnClickListener{ dialog, _ ->
-        dialog.cancel()
-        })
-        val alert = builder.create()
-        alert.show()
-
-
-
-    }
-
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//
+//        fragmentViewModel.toDoLiveData.observe(
+//            viewLifecycleOwner, androidx.lifecycle.Observer {
+//                it?.let {
+//                    toDo = it
+//                    title.setText(it.title)
+//                    description.setText(it.description)
+//                    creationDateBtn.text = creationDateString
+//                    when (toDo.dueDate) {
+//                        null -> "enter due date"
+//                        else -> dueDateBtn.text =
+//                            android.text.format.DateFormat.format(dateFormat, toDo.dueDate)
+//                    }
+//                }
+//            }
+//        )
+//    }
+//
+//    private fun initialize(view: View) {
+////        title = view.findViewById(R.id.to_do_title)
+////        description = view.findViewById(R.id.to_do_description)
+////        creationDateBtn = view.findViewById(R.id.creation_date_btn)
+////        dueDateBtn = view.findViewById(R.id.due_date_btn)
+////        deleteBtn = view.findViewById(R.id.delete_button)
+////        saveBtn = view.findViewById(R.id.save_changes_Btn)
+//
+//        creationDateBtn.isEnabled = false
+//    }
+//
+//    override fun onStart() {
+//        super.onStart()
+//
+//        val titleWatcher = object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//                // nothing to do here
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                toDo.title = s.toString()
+//            }
+//
+//            override fun afterTextChanged(s: Editable?) {
+//                // nothing to do here
+//            }
+//
+//        }
+//
+//        val descriptionWatcher = object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//                // nothing to do here
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                toDo.description = s.toString()
+//            }
+//
+//            override fun afterTextChanged(s: Editable?) {
+//                // nothing to do here
+//            }
+//
+//        }
+//
+//        title.addTextChangedListener(titleWatcher)
+//        description.addTextChangedListener(descriptionWatcher)
+//
+//        deleteBtn.setOnClickListener {
+//            deleteToDo(toDo)
+//
+//            fragmentViewModel.updateToDo(toDo)
+//        }
+//
+//        dueDateBtn.setOnClickListener {
+//            val args = Bundle()
+//            val dueDate = DueDateDialog()
+//
+//            args.putSerializable(DUE_DATE_KEY, toDo.dueDate)
+//
+//            dueDate.arguments = args
+//            dueDate.setTargetFragment(this, 0)
+//
+//            dueDate.show(this.parentFragmentManager, "DueDate")
+//        }
+//
+//        saveBtn.setOnClickListener {
+//            if (toDoId == null) {
+//
+//
+//                saveToDo(toDo)
+//            } else {
+//
+//
+//                saveToDo(toDo)
+//
+//
+//            }
+//        }
+//    }
+//
+//
+//    private fun deleteToDo(toDo: ToDo) {
+//
+//        val builder = AlertDialog.Builder(activity)
+//
+//        builder.setTitle("confirm delete")
+//        builder.setMessage("are you sure you want to delete this task?")
+//
+//        builder.setPositiveButton("delete", DialogInterface.OnClickListener { _, _ ->
+//
+//            fragmentViewModel.deleteToDo(toDo)
+//
+//            activity?.let {
+//                it.supportFragmentManager
+//                    .popBackStackImmediate()
+//            }
+//        })
+//        builder.setNegativeButton("cancel", DialogInterface.OnClickListener { dialog, _ ->
+//            dialog.cancel()
+//        })
+//        val alert = builder.create()
+//        alert.show()
+//
+//
+//    }
+//
     override fun onDateSelected(date: Date) {
         toDo.dueDate = date
 
-        dueDateBtn.text = android.text.format.DateFormat.format(dateFormat,toDo.dueDate)
+        dueDateBtn.text = android.text.format.DateFormat.format(dateFormat, toDo.dueDate)
     }
 
-    private fun saveToDo(toDo: ToDo){
-        if (toDo.title == "" && toDoId == null){
-            val builder = AlertDialog.Builder(activity)
+//    private fun saveToDo(toDo: ToDo) {
+//        if (toDo.title == "" && toDoId == null) {
+//            val builder = AlertDialog.Builder(activity)
+//
+//            builder.setTitle("Empty title")
+//            builder.setMessage("are you sure you want to add a task with Empty title?")
+//
+//            builder.setPositiveButton("add", DialogInterface.OnClickListener { _, _ ->
+//
+//                fragmentViewModel.addToDo(toDo)
+//
+//                fragmentViewModel.updateToDo(toDo)
+//
+//
+//                activity?.let {
+//                    it.supportFragmentManager
+//                        .popBackStackImmediate()
+//                }
+//            })
+//            builder.setNegativeButton("cancel", DialogInterface.OnClickListener { dialog, _ ->
+//                dialog.cancel()
+//            })
+//            val alert = builder.create()
+//            alert.show()
+//        } else if (toDoId == null) {
+//
+//            fragmentViewModel.addToDo(toDo)
+//
+//            fragmentViewModel.updateToDo(toDo)
+//
+//
+//            activity?.let {
+//                it.supportFragmentManager
+//                    .popBackStackImmediate()
+//            }
+//        } else {
+//            fragmentViewModel.updateToDo(toDo)
+//
+//
+//            activity?.let {
+//                it.supportFragmentManager
+//                    .popBackStackImmediate()
+//            }
+//        }
+//    }
 
-            builder.setTitle("Empty title")
-            builder.setMessage("are you sure you want to add a task with Empty title?")
 
-            builder.setPositiveButton("add",DialogInterface.OnClickListener{ _, _ ->
+    @Composable
+    fun ToDoFragmentCompose() {
 
-                fragmentViewModel.addToDo(toDo)
-
-                fragmentViewModel.updateToDo(toDo)
-
-
-                activity?.let {
-                    it.supportFragmentManager
-                        .popBackStackImmediate()
-                }
-            })
-            builder.setNegativeButton("cancel",DialogInterface.OnClickListener{ dialog, _ ->
-                dialog.cancel()
-            })
-            val alert = builder.create()
-            alert.show()
-        }else if (toDoId == null){
-
-            fragmentViewModel.addToDo(toDo)
-
-            fragmentViewModel.updateToDo(toDo)
-
-
-            activity?.let {
-                it.supportFragmentManager
-                    .popBackStackImmediate()
-            }
-        }else{
-            fragmentViewModel.updateToDo(toDo)
-
-
-            activity?.let {
-                it.supportFragmentManager
-                    .popBackStackImmediate()
-            }
+        var creationDate = remember {
+            ""
         }
-    }
 
+        var dueDate = remember {
+            ""
+        }
 
-}
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            TextField(
+                value = "title",
+                onValueChange = {
+                    it
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-@Composable
-fun ToDoFragmentCompose() {
-
-    var creationDate = remember {
-        ""
-    }
-
-    var dueDate = remember {
-        ""
-    }
-
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)
-        ,
-        verticalArrangement = Arrangement.SpaceEvenly) {
-        TextField(
-            value = "title",
-            onValueChange = {
+            TextField(value = "description", onValueChange = {
                 it
             },
-            modifier = Modifier.fillMaxWidth())
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+            )
 
 
-        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
 
-            Text(text = "creationDate" , )
+                Text(text = "creationDate",)
 
-            Text(text = "dueDate")
-        }
-        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly) {
+                Text(text = "dueDate")
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
 
-            Button(enabled = false,onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)){
-                Text(text = "Creation Date")
+                Button(
+                    enabled = false,
+                    onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)
+                ) {
+                    Text(text = "Creation Date")
+                }
+
+                Button(
+                    onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)
+                ) {
+                    Text(text = "Due Date")
+                }
             }
 
-            Button(onClick = { /*TODO*/ },colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)){
-                Text(text = "Due Date")
-            }
-        }
-        TextField(value = "description", onValueChange = {
-            it
-        }  ,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
-        )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
 
-        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly) {
+                Button(
+                    onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)
+                ) {
+                    Text(text = "Delete")
+                }
 
-            Button(onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)){
-                Text(text = "Delete")
-            }
-
-            Button(onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)){
-                Text(text = "Save")
+                Button(
+                    onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)
+                ) {
+                    Text(text = "Save")
+                }
             }
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun FragmentPrev() {
-    ToDoFragmentCompose()
+    @Preview(showBackground = true)
+    @Composable
+    fun FragmentPrev() {
+        ToDoFragmentCompose()
+    }
 }
 
