@@ -1,17 +1,18 @@
 package toDoListFragment
 
-import android.annotation.SuppressLint
 import android.graphics.Paint
-import android.icu.util.TimeUnit.values
 import android.os.Bundle
-import android.text.format.DateFormat.format
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import android.widget.Button
 import android.widget.CheckBox
-import android.widget.CompoundButton
 import android.widget.TextView
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.Checkbox
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -22,10 +23,6 @@ import com.example.todo.R
 import com.example.todo.ToDo
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import toDoFragment.ToDoFragment
-import java.lang.String.format
-import java.text.DateFormat
-import java.text.Format
-import java.time.chrono.JapaneseEra.values
 import java.util.*
 
 const val KEY_ID  = "ToDoID"
@@ -84,11 +81,11 @@ class ToDoListFragment : Fragment() {
 
 
 
-        fragmentListViewModel.liveDataToDo.observeOnce(
-            viewLifecycleOwner, Observer {
-                updateUI(it)
-            }
-        )
+//        fragmentListViewModel.liveDataToDo.observe(
+//            viewLifecycleOwner, Observer {
+//                updateUI(it)
+//            }
+//        )
 
 
 
@@ -146,7 +143,7 @@ class ToDoListFragment : Fragment() {
 
             val creationDateString = android.text.format.DateFormat.format(dateFormat,toDo.creationDate)
 
-            checkIsCompleted()
+          //  checkIsCompleted()
 
             toDoTitle.text = toDo.title
             toDoCreationDate.text = creationDateString
@@ -162,7 +159,7 @@ class ToDoListFragment : Fragment() {
 
                 toDo.isCompleted = isChecked
 
-                checkIsCompleted()
+                //checkIsCompleted()
 
                 fragmentListViewModel.updateToDo(toDo)
 
@@ -172,27 +169,7 @@ class ToDoListFragment : Fragment() {
 
         }
 
-        private fun checkIsCompleted(){
-            if (toDo.isCompleted) {
-                toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.black))
 
-                toDoTitle.apply {
-                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                }
-            }else if (!toDo.isCompleted){
-                toDoTitle.apply {
-                    paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-                }
-            }
-
-            val currentDate = Date()
-
-            if(toDo.dueDate != null) {
-                if (currentDate.after(toDo.dueDate) && !toDo.isCompleted) {
-                    toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.red))
-                }
-            }
-        }
     }
 
     private inner class ToDoAdapter(var ToDos:List<ToDo>) : RecyclerView.Adapter<ToDoHolder>() {
@@ -245,31 +222,31 @@ class ToDoListFragment : Fragment() {
 
             R.id.by_due_date -> {
 
-
+                removeObserver()
                 observer("dueDate")
 
             true
             }
             R.id.by_creation_date -> {
 
-
+                removeObserver()
                 observer("creationDate")
                 true
             }
             R.id.by_alphabetically ->{
 
-
+                removeObserver()
                 observer("title")
                 true
             }
             R.id.by_completed -> {
 
-
+                removeObserver()
                 observer("isCompleted0")
                 true
             }
             R.id.by_not_completed -> {
-
+                removeObserver()
                 observer("isCompleted1")
 
                 true
@@ -296,13 +273,16 @@ class ToDoListFragment : Fragment() {
     }
 
     private fun getAll(){
-        fragmentListViewModel.liveDataToDo.observeOnce(
+        fragmentListViewModel.liveDataToDo.observe(
             viewLifecycleOwner, Observer {
                 updateUI(it)
             }
         )
     }
 
+    private fun removeObserver(){
+        fragmentListViewModel.liveDataToDo.removeObservers(viewLifecycleOwner)
+    }
 
 
     private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
@@ -312,6 +292,63 @@ class ToDoListFragment : Fragment() {
                 removeObserver(this)
             }
         })
+    }
+
+    fun onCheckedChange(toDo: ToDo){
+        toDo.isCompleted = !toDo.isCompleted
+
+        //checkIsCompleted()
+
+        fragmentListViewModel.updateToDo(toDo)
+    }
+
+//    fun checkIsCompleted(toDo: ToDo){
+//        if (toDo.isCompleted) {
+//            toDo.title.setTextColor(resources.getColor(fragmentListViewModel.black))
+//
+//            toDo.title.apply {
+//                paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+//            }
+//        }else if (!toDo.isCompleted){
+//            toDoTitle.apply {
+//                paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+//            }
+//        }
+//
+//        val currentDate = Date()
+//
+//        if(toDo.dueDate != null) {
+//            if (currentDate.after(toDo.dueDate) && !toDo.isCompleted) {
+//                toDoTitle.setTextColor(resources.getColor(fragmentListViewModel.red))
+//            }
+//        }
+//    }
+
+    @Composable
+    fun ToDoFragmentListComposable(toDos: List<ToDo>) {
+
+
+
+        LazyColumn{
+
+            itemsIndexed(
+                toDos
+            ){index , toDo ->
+
+
+                Checkbox(checked = false, onCheckedChange = {  })
+
+
+            }
+
+
+        }
+    }
+
+    @Preview
+    @Composable
+    fun ToDoListFragmentPrev() {
+        //ToDoFragmentListComposable()
     }
 
 

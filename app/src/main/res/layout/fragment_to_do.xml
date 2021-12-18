@@ -7,93 +7,11 @@
     android:background="#fbe9e7"
     tools:context="toDoFragment.ToDoFragment">
 
-    <EditText
-        android:id="@+id/to_do_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="80dp"
-        android:hint="@string/to_do_title_hint"
-        android:textColor="@color/black"
-        android:textSize="20sp"
+    <androidx.compose.ui.platform.ComposeView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/creation_date_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="29dp"
-        android:text="@string/creation_date_text"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/creation_date_btn"
-        app:layout_constraintEnd_toEndOf="@+id/creation_date_btn" />
-
-    <TextView
-        android:id="@+id/due_date_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="29dp"
-        android:text="@string/due_date_text"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/due_date_btn"
-        app:layout_constraintStart_toStartOf="@+id/due_date_btn" />
-
-    <Button
-        android:id="@+id/creation_date_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="41dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="48dp"
-        android:text="@string/creation_date_text"
-        app:layout_constraintBottom_toTopOf="@+id/to_do_description"
-        app:layout_constraintEnd_toStartOf="@+id/due_date_btn"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/due_date_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="58dp"
-        android:layout_marginBottom="48dp"
-        android:text="@string/due_date_text"
-        app:layout_constraintBottom_toTopOf="@+id/to_do_description"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <EditText
-        android:id="@+id/to_do_description"
-        android:layout_width="347dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="329dp"
-        android:hint="@string/to_do_description_hint"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginBottom="100dp"
-        android:text="@string/delete_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/save_changes_Btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="64dp"
-        android:layout_marginBottom="100dp"
-        android:text="@string/save_changes_Btn"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

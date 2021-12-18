@@ -26,6 +26,6 @@ interface ToDoDao {
 
     @Query("SELECT * FROM ToDo ORDER BY CASE WHEN :sortType = 'title' THEN title END, CASE WHEN :sortType = 'creationDate' THEN creationDate END, CASE WHEN :sortType = 'dueDate' THEN dueDate END , CASE WHEN :sortType = 'isCompleted0' THEN isCompleted = 0 END, CASE WHEN :sortType = 'isCompleted1' THEN isCompleted = 1 END")
     fun sorting(sortType:String):LiveData<List<ToDo>>
-
+    
 
 }

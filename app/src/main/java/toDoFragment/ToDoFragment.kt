@@ -12,6 +12,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import androidx.sqlite.db.SupportSQLiteCompat.Api16Impl.cancel
 import com.example.todo.R
@@ -87,12 +100,12 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
     }
 
     private fun initialize(view: View){
-        title = view.findViewById(R.id.to_do_title)
-        description = view.findViewById(R.id.to_do_description)
-        creationDateBtn = view.findViewById(R.id.creation_date_btn)
-        dueDateBtn = view.findViewById(R.id.due_date_btn)
-        deleteBtn = view.findViewById(R.id.delete_button)
-        saveBtn = view.findViewById(R.id.save_changes_Btn)
+//        title = view.findViewById(R.id.to_do_title)
+//        description = view.findViewById(R.id.to_do_description)
+//        creationDateBtn = view.findViewById(R.id.creation_date_btn)
+//        dueDateBtn = view.findViewById(R.id.due_date_btn)
+//        deleteBtn = view.findViewById(R.id.delete_button)
+//        saveBtn = view.findViewById(R.id.save_changes_Btn)
 
         creationDateBtn.isEnabled = false
     }
@@ -248,3 +261,71 @@ class ToDoFragment : Fragment() , DueDateDialog.DueDateCallBack{
 
 
 }
+
+@Composable
+fun ToDoFragmentCompose() {
+
+    var creationDate = remember {
+        ""
+    }
+
+    var dueDate = remember {
+        ""
+    }
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)
+        ,
+        verticalArrangement = Arrangement.SpaceEvenly) {
+        TextField(
+            value = "title",
+            onValueChange = {
+                it
+            },
+            modifier = Modifier.fillMaxWidth())
+
+
+        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly) {
+
+            Text(text = "creationDate" , )
+
+            Text(text = "dueDate")
+        }
+        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly) {
+
+            Button(enabled = false,onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)){
+                Text(text = "Creation Date")
+            }
+
+            Button(onClick = { /*TODO*/ },colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)){
+                Text(text = "Due Date")
+            }
+        }
+        TextField(value = "description", onValueChange = {
+            it
+        }  ,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
+        )
+
+        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly) {
+
+            Button(onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)){
+                Text(text = "Delete")
+            }
+
+            Button(onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)){
+                Text(text = "Save")
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FragmentPrev() {
+    ToDoFragmentCompose()
+}
+
